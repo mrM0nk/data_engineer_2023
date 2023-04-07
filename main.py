@@ -17,13 +17,13 @@ def get_args(argv: Optional[Sequence[str]] = None):
     parser.add_argument('-price_from', type=int, default=None, help='supported only USD values')    # implemented
     parser.add_argument('-price_to', type=int, default=None, help='supported only USD values')      # implemented
     parser.add_argument('-transmission', type=str, default=None, help='')                           # implemented
-    parser.add_argument('-mileage', type=int, default=None, help='')                                # implemented
-    parser.add_argument('-body', type=str, default=None, help='')
-    parser.add_argument('-engine_from', type=int, default=None, help='')
-    parser.add_argument('-engine_to', type=int, default=None, help='')
-    parser.add_argument('-fuel', type=str, default=None, help='')
-    parser.add_argument('-exchange', type=str, default=None, help='')
-    parser.add_argument('-keywords', type=str, default=None, help='')
+    parser.add_argument('-mileage', type=int, default=None, help='please put value in km')          # implemented
+    parser.add_argument('-body', type=str, default=None, help='')                                   # implemented
+    parser.add_argument('-engine_from', type=int, default=None, help='please put value in ml')      # implemented
+    parser.add_argument('-engine_to', type=int, default=None, help='please put value in ml')        # implemented
+    parser.add_argument('-fuel', type=str, default=None, help='')                                   # implemented
+    parser.add_argument('-exchange', type=str, default=None, help='please put Yes or NO value')     # implemented
+    parser.add_argument('-keywords', type=str, default=None, help='')                               # implemented
     parser.add_argument('-max_records', type=int, default=20, help='')
     parser.add_argument('-source_file', type=str, default='source_data/cars-av-by_card_20230407.csv', help='')
 
@@ -134,15 +134,24 @@ def parse_file(params):
             try:
                 description_engine = int(''.join(x for x in description.split('|')[0].split(',')[2]if x.isdigit()) +
                                          '00')
+                if (params.engine_from and description_engine < int(params.engine_from)) or \
+                        (params.engine_to and description_engine > int(params.engine_to)):
+                    continue
             except:
                 description_engine = None
+
             try:
                 if description_engine == 0:
                     description_fuel = description.split('|')[0].split(',')[2].strip()
+                    if params.fuel and params.fuel.upper() not in description_fuel.upper():
+                        continue
                 else:
                     description_fuel = description.split('|')[0].split(',')[-2].strip()
+                    if params.fuel and params.fuel.upper() not in description_fuel.upper():
+                        continue
             except:
                 description_fuel = None
+
             try:
                 description_mileage = (int(''.join(x for x in description.split('|')[0].split(',')[-1] if x.isdigit())),
                                        'km')
@@ -153,8 +162,11 @@ def parse_file(params):
 
             try:
                 description_body = description.split('|')[1].split(',')[0].strip()
+                if params.body and params.body.upper() not in description_body.upper():
+                    continue
             except:
                 description_body = None
+
             try:
                 description_drive_type = description.split('|')[1].split(',')[1].strip()
             except:
@@ -165,14 +177,23 @@ def parse_file(params):
                 description_color = None
 
             exchange = row[8]
+            try:
+                exchange_processed = 'no' if 'не' in row[8] else 'yes'
+                if params.exchange and params.exchange.upper() != exchange_processed.upper():
+                    continue
+            except:
+                exchange_processed = None
 
             scrap_date = row[9]
 
             full_card = title + ' ' + price_primary + ' ' + price_secondary + ' ' + location + ' ' + labels + ' ' +\
                         comment + ' ' + description + ' ' + exchange + ' ' + scrap_date
 
+            if params.keywords and params.keywords.upper() not in full_card.upper():
+                continue
 
-            #print(full_card)
+
+            print(full_card)
 
 
 
