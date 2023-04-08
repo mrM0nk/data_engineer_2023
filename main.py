@@ -35,7 +35,7 @@ def get_args(argv: Optional[Sequence[str]] = None):
 params = get_args()
 
 
-def parse_file(params):
+def parse_and_filter_file(params):
     """this function splits dataset into tokens and uses arguments as params for filtering cars and returns dic of
        filtered cars for further processing filtered cars
     creation date: 2023-04-05, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
@@ -209,10 +209,10 @@ def parse_file(params):
     return filtered_cars
 
 
-filtered_cars = parse_file(params)
+filtered_cars = parse_and_filter_file(params)
 
 
-def order_print_top_filtered_cars(params, filtered_cars):
+def order_and_print_top_filtered_cars(params, filtered_cars):
     """this function orders filtered cars and prints them using params
     creation date: 2023-04-08, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
 
@@ -243,5 +243,5 @@ def order_print_top_filtered_cars(params, filtered_cars):
             counter += 1
 
 
-order_print_top_filtered_cars(params, filtered_cars)
+order_and_print_top_filtered_cars(params, filtered_cars)
 
