@@ -224,8 +224,9 @@ def order_print_top_filtered_cars(params, filtered_cars):
                                        key=lambda x: x[0]['price']['secondary'][0])
 
     counter = 0
+
     if len(filtered_cars_and_ordered) > 0:
-        while counter < int(params.max_records):
+        while counter < min(len(filtered_cars_and_ordered), int(params.max_records)):
             print(filtered_cars_and_ordered[counter][0]['title']['brand'] + '\t' +
                   filtered_cars_and_ordered[counter][0]['title']['model'] + '\t' +
                   str(filtered_cars_and_ordered[counter][0]['price']['secondary'][0]) + ' ' +
