@@ -7,24 +7,24 @@ from typing import Sequence
 
 def get_args(argv: Optional[Sequence[str]] = None):
     """this function sets up arguments for getting cars and returns arguments for further searching cars
-    developer: Maksym Sukhorukov"""
+    creation date: 2023-04-05, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-year_from', type=int, default=None, help='only digit values')             # implemented
-    parser.add_argument('-year_to', type=int, default=None, help='only digit values')               # implemented
-    parser.add_argument('-brand', type=str, default=None, help='')                                  # implemented
-    parser.add_argument('-model', type=str, default=None, help='')                                  # implemented
-    parser.add_argument('-price_from', type=int, default=None, help='supported only USD values')    # implemented
-    parser.add_argument('-price_to', type=int, default=None, help='supported only USD values')      # implemented
-    parser.add_argument('-transmission', type=str, default=None, help='')                           # implemented
-    parser.add_argument('-mileage', type=int, default=None, help='please put value in km')          # implemented
-    parser.add_argument('-body', type=str, default=None, help='')                                   # implemented
-    parser.add_argument('-engine_from', type=int, default=None, help='please put value in ml')      # implemented
-    parser.add_argument('-engine_to', type=int, default=None, help='please put value in ml')        # implemented
-    parser.add_argument('-fuel', type=str, default=None, help='')                                   # implemented
-    parser.add_argument('-exchange', type=str, default=None, help='please put Yes or NO value')     # implemented
-    parser.add_argument('-keywords', type=str, default=None, help='')                               # implemented
-    parser.add_argument('-max_records', type=int, default=20, help='')
+    parser.add_argument('-year_from', type=int, default=None, help='only digit values')
+    parser.add_argument('-year_to', type=int, default=None, help='only digit values')
+    parser.add_argument('-brand', type=str, default=None, help='')
+    parser.add_argument('-model', type=str, default=None, help='')
+    parser.add_argument('-price_from', type=int, default=None, help='supported only USD values')
+    parser.add_argument('-price_to', type=int, default=None, help='supported only USD values')
+    parser.add_argument('-transmission', type=str, default=None, help='')
+    parser.add_argument('-mileage', type=int, default=None, help='please put value in km')
+    parser.add_argument('-body', type=str, default=None, help='')
+    parser.add_argument('-engine_from', type=int, default=None, help='please put value in ml')
+    parser.add_argument('-engine_to', type=int, default=None, help='please put value in ml')
+    parser.add_argument('-fuel', type=str, default=None, help='')
+    parser.add_argument('-exchange', type=str, default=None, help='please put Yes or NO value')
+    parser.add_argument('-keywords', type=str, default=None, help='please put additional 1 word for searching')
+    parser.add_argument('-max_records', type=int, default=20, help='please put Top N digit value')
     parser.add_argument('-source_file', type=str, default='source_data/cars-av-by_card_20230407.csv', help='')
 
     args = parser.parse_args(argv)
@@ -35,13 +35,13 @@ def get_args(argv: Optional[Sequence[str]] = None):
 params = get_args()
 
 
-
-
-
 def parse_file(params):
+    """this function splits dataset into tokens and uses arguments as params for filtering cars and returns dic of
+       filtered cars for further processing filtered cars
+    creation date: 2023-04-05, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
 
     header_line = True
-    counter = 0                         # for testing
+    filtered_cars = []
 
     with open(params.source_file, 'r', encoding='utf-8') as file:  # encoding='utf-8'
         cars = csv.reader(file)
@@ -50,10 +50,6 @@ def parse_file(params):
                 header_line = False
                 continue
 
-            if counter > 2:             # for testing
-                continue                # for testing
-            counter += 0                # for testing
-
             card_id = int(row[0])
 
             title = row[1]
@@ -61,12 +57,14 @@ def parse_file(params):
                 title_deal_type = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[1].strip()
             except:
                 title_deal_type = None
+
             try:
                 title_brand = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[2].strip()
                 if params.brand and params.brand.upper() not in title_brand.upper():
                     continue
             except:
                 title_brand = None
+
             try:
                 title_model = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[3].strip()
                 if params.model and params.model.upper() not in title_model.upper():
@@ -78,7 +76,6 @@ def parse_file(params):
                 title_restyling = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[6].strip()
             except:
                 title_restyling = None
-
 
             price_primary = row[2]
             try:
@@ -171,6 +168,7 @@ def parse_file(params):
                 description_drive_type = description.split('|')[1].split(',')[1].strip()
             except:
                 description_drive_type = None
+
             try:
                 description_color = description.split('|')[1].split(',')[2].strip()
             except:
@@ -192,12 +190,57 @@ def parse_file(params):
             if params.keywords and params.keywords.upper() not in full_card.upper():
                 continue
 
+            filtered_cars.append([{'card': {'id': card_id},
+                                   'title': {'deal_type': title_deal_type, 'brand': title_brand,
+                                             'model': title_model, 'restyling': title_restyling},
+                                   'price': {'primary': price_primary_processed, 'secondary': price_secondary_processed},
+                                   'location': {'country': location_country, 'city': location_city,
+                                                'region': location_region},
+                                   'labels': {'labels': labels_upd_processed},
+                                   'comment': {'comment': comment},
+                                   'description': {'year': description_year, 'transmission': description_transmission,
+                                                   'engine': description_engine, 'fuel': description_fuel,
+                                                   'mileage': description_mileage, 'body': description_body,
+                                                   'type': description_drive_type, 'color': description_color},
+                                   'exchange': {'exchange': exchange},
+                                   'scrap_date': {'scrap_date': scrap_date}
+                                   }])
 
-            print(full_card)
+    return filtered_cars
 
 
+filtered_cars = parse_file(params)
 
-parse_file(params)
+
+def order_print_top_filtered_cars(params, filtered_cars):
+    """this function orders filtered cars and prints them using params
+    creation date: 2023-04-08, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
+
+    print('brand,\tmodel,\tprice,\tyear,\ttransmission,\tengine,\tmileage,\tbody,\tfuel')
+
+    filtered_cars_and_ordered = sorted(sorted(sorted(filtered_cars,
+                                                     key=lambda x: x[0]['description']['mileage'][0]),
+                                              key=lambda x: x[0]['description']['year'], reverse=True),
+                                       key=lambda x: x[0]['price']['secondary'][0])
+
+    counter = 0
+    if len(filtered_cars_and_ordered) > 0:
+        while counter < int(params.max_records):
+            print(filtered_cars_and_ordered[counter][0]['title']['brand'] + ',\t' +
+                  filtered_cars_and_ordered[counter][0]['title']['model'] + ',\t' +
+                  str(filtered_cars_and_ordered[counter][0]['price']['secondary'][0]) + ' ' +
+                  filtered_cars_and_ordered[counter][0]['price']['secondary'][1] + ',\t' +
+                  str(filtered_cars_and_ordered[counter][0]['description']['year']) + ',\t' +
+                  filtered_cars_and_ordered[counter][0]['description']['transmission'] + ',\t' +
+                  str(filtered_cars_and_ordered[counter][0]['description']['engine']) + ',\t' +
+                  str(filtered_cars_and_ordered[counter][0]['description']['mileage'][0]) + ' ' +
+                  filtered_cars_and_ordered[counter][0]['description']['mileage'][1] + ',\t' +
+                  filtered_cars_and_ordered[counter][0]['description']['body'] + ',\t' +
+                  filtered_cars_and_ordered[counter][0]['description']['fuel']
+                  )
+
+            counter += 1
 
 
+order_print_top_filtered_cars(params, filtered_cars)
 
