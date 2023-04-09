@@ -3,6 +3,7 @@ import csv
 import re
 from typing import Optional
 from typing import Sequence
+from tabulate import tabulate
 
 
 def get_args(argv: Optional[Sequence[str]] = None):
@@ -214,9 +215,9 @@ filtered_cars = parse_and_filter_file(params)
 
 def order_and_print_top_filtered_cars(params, filtered_cars):
     """this function orders filtered cars and prints them using params
-    creation date: 2023-04-08, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
+    creation date: 2023-04-08, last_update: 2023-04-09, developer: Maksym Sukhorukov"""
 
-    print('brand\tmodel\tprice\tyear\ttransmission\tengine\tmileage\tbody\tfuel')
+    #print('brand\tmodel\tprice\tyear\ttransmission\tengine\tmileage\tbody\tfuel')
 
     filtered_cars_and_ordered = sorted(sorted(sorted(filtered_cars,
                                                      key=lambda x: x[0]['description']['mileage'][0]),
@@ -226,21 +227,26 @@ def order_and_print_top_filtered_cars(params, filtered_cars):
     counter = 0
 
     if len(filtered_cars_and_ordered) > 0:
+        prepared_to_print = []
+
         while counter < min(len(filtered_cars_and_ordered), int(params.max_records)):
-            print(filtered_cars_and_ordered[counter][0]['title']['brand'] + '\t' +
-                  filtered_cars_and_ordered[counter][0]['title']['model'] + '\t' +
-                  str(filtered_cars_and_ordered[counter][0]['price']['secondary'][0]) + ' ' +
-                  filtered_cars_and_ordered[counter][0]['price']['secondary'][1] + '\t' +
-                  str(filtered_cars_and_ordered[counter][0]['description']['year']) + '\t' +
-                  filtered_cars_and_ordered[counter][0]['description']['transmission'] + '\t' +
-                  str(filtered_cars_and_ordered[counter][0]['description']['engine']) + '\t' +
-                  str(filtered_cars_and_ordered[counter][0]['description']['mileage'][0]) + ' ' +
-                  filtered_cars_and_ordered[counter][0]['description']['mileage'][1] + '\t' +
-                  filtered_cars_and_ordered[counter][0]['description']['body'] + '\t' +
-                  filtered_cars_and_ordered[counter][0]['description']['fuel']
-                  )
+            prepared_to_print.append([filtered_cars_and_ordered[counter][0]['title']['brand'],
+                                      filtered_cars_and_ordered[counter][0]['title']['model'],
+                                      str(filtered_cars_and_ordered[counter][0]['price']['secondary'][0]) + ' ' +
+                                      filtered_cars_and_ordered[counter][0]['price']['secondary'][1],
+                                      str(filtered_cars_and_ordered[counter][0]['description']['year']),
+                                      filtered_cars_and_ordered[counter][0]['description']['transmission'],
+                                      str(filtered_cars_and_ordered[counter][0]['description']['engine']),
+                                      str(filtered_cars_and_ordered[counter][0]['description']['mileage'][0]) + ' ' +
+                                      filtered_cars_and_ordered[counter][0]['description']['mileage'][1],
+                                      filtered_cars_and_ordered[counter][0]['description']['body'],
+                                      filtered_cars_and_ordered[counter][0]['description']['fuel']])
 
             counter += 1
+
+        print(tabulate(prepared_to_print,
+                       headers=['brand', 'model', 'price', 'year', 'transmission', 'engine', 'mileage', 'body', 'fuel'],
+                       tablefmt='mixed_grid'))
 
 
 order_and_print_top_filtered_cars(params, filtered_cars)
