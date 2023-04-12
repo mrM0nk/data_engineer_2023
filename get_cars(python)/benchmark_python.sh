@@ -4,7 +4,7 @@
 start=$(date +%s.%N)
 
 counter=1
-while [ $counter -le 5 ]
+while [ $counter -le 10 ]
 	do
 	
 		#####get_cars(python) part#####
@@ -17,7 +17,7 @@ while [ $counter -le 5 ]
 
 
 end=$(date +%s.%N)    
-runtime=$(python -c "print((${end} - ${start})/5)")
+runtime=$(python -c "print((${end} - ${start})/10)")
 
 echo "Runtime was $runtime"
 

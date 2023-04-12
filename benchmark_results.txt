@@ -1,0 +1,17 @@
+date        tool                    dataset                         avg_time(s)     params      notes
+20230412    get_cars(python)        cars-av-by_card_20230407.csv    3.35            default     1st iteration of utility
+
+
+
+
+
+
+
+params options:
+    - default - run "main.py" script without any arguments
+
+
+for running benchmark:
+    - open bash utility in folder that is related to tested script
+    - run program like:  bash *.sh  example:  bash benchmark_python.sh
+
