@@ -25,7 +25,7 @@ card_id.id               - int
 title.deal_type          - str ('продажа')
 title.brand              - str
 title.model              - str
-title.restyling          - str ('Y', 'N', None)
+not implemented          - title.restyling          - str ('Y', 'N', None)
 price_primary            - tuple (value - int, money_code ('byn', 'usd', 'uah', 'rub')
 price_secondary          - tuple (value - int, money_code ('byn', 'usd', 'uah', 'rub')
 location.country         - str
@@ -126,7 +126,6 @@ to do:
 
 -. Добавить функционал keywords чтобы можно было указывать один и больше слов через запятую
 -. почитать про - generator - yeld
--. рассмотреть вохможность разделения парсинга токенов и фильтрации
 -. io.StringIO() - это надо совместим по интерфейсу с обычными файлами и можно csv reader настроить на этот поток в памяти
 -. тоже лучше печатать с StringIO
 -. Проинвестигировать возможность и целесообразность фильтровать первоочередно по параметрам которые не None либо переход при использовании StringIO

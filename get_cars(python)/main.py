@@ -42,57 +42,30 @@ def parse_and_filter_file(params):
 
     header_line = True
     filtered_cars = []
+    counter = 1                                                             # for testing
 
     with open(params.source_file, 'r', encoding='utf-8') as file:  # encoding='utf-8'
         cars = csv.reader(file)
         for row in cars:
-            if header_line:
+            if header_line or counter > 2:                                  # or counter > 5 added for testing
                 header_line = False
                 continue
 
-            card_id = int(row[0])
-
-            title = row[1]
-            try:
-                title_deal_type = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[1].strip()
-            except:
-                title_deal_type = None
+            card_id, title, price_primary, price_secondary, location, labels, comment, description, exchange, \
+            scrap_date = row[0:]
 
             try:
-                title_brand = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[2].strip()
-                if params.brand and params.brand.upper() not in title_brand.upper():
-                    continue
+                title_deal_type, title_brand, title_model = re.split(r'^(\S+) (\S+) (.+),(.+)$', title)[1:4]
             except:
-                title_brand = None
-
-            try:
-                title_model = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[3].strip()
-                if params.model and params.model.upper() not in title_model.upper():
-                    continue
-            except:
-                title_model = None
-
-            try:
-                title_restyling = re.split(r'^(\S+)\s+(\S+)\s+([^·]+)((\·)\s+(.+))?$|$', title.split(',')[0])[6].strip()
-            except:
-                title_restyling = None
-
-            price_primary = row[2]
+                title_deal_type, title_brand, title_model = None, None, None
             try:
                 price_primary_processed = (int((''.join(x for x in row[2] if x.isdigit()))), 'byn')
             except:
                 price_primary_processed = (None, 'byn')
-
-            price_secondary = row[3]
             try:
                 price_secondary_processed = (int((''.join(x for x in row[3] if x.isdigit()))), 'usd')
-                if (params.price_from and price_secondary_processed[0] < int(params.price_from)) or \
-                        (params.price_to and price_secondary_processed[0] > int(params.price_to)):
-                    continue
             except:
                 price_secondary_processed = (None, 'usd')
-
-            location = row[4]
             location_country = 'belarus'
             try:
                 location_city = re.split(r'^(\S+)(\,\s(.+))?$', location)[1].strip()
@@ -102,38 +75,26 @@ def parse_and_filter_file(params):
                 location_region = re.split(r'^(\S+)(\,\s(.+))?$', location)[-2].strip()
             except:
                 location_region = None
-
-            labels = row[5]
-
             try:
                 labels_upd_processed = ''.join(x + ', ' for x in labels.split('|')).strip(', ')
             except:
                 labels_upd_processed = None
 
-            comment = row[6]
+            full_card = ' '.join(x for x in row[1:9])
 
-            description = row[7]
+
+
+
             try:
                 description_year = int(''.join(x for x in description.split('|')[0].split(',')[0] if x.isdigit()))
-                if (params.year_from and description_year < int(params.year_from)) or \
-                        (params.year_to and description_year > int(params.year_to)):
-                    continue
             except:
                 description_year = None
-
             try:
                 description_transmission = description.split('|')[0].split(',')[1].strip()
-                if params.transmission and params.transmission.upper() not in description_transmission.upper():
-                    continue
             except:
                 description_transmission = None
-
             try:
-                description_engine = int(''.join(x for x in description.split('|')[0].split(',')[2]if x.isdigit()) +
-                                         '00')
-                if (params.engine_from and description_engine < int(params.engine_from)) or \
-                        (params.engine_to and description_engine > int(params.engine_to)):
-                    continue
+                description_engine = int(''.join(x for x in description.split('|')[0].split(',')[2]if x.isdigit()) + '00')
             except:
                 description_engine = None
 
@@ -148,33 +109,51 @@ def parse_and_filter_file(params):
                         continue
             except:
                 description_fuel = None
-
             try:
-                description_mileage = (int(''.join(x for x in description.split('|')[0].split(',')[-1] if x.isdigit())),
-                                       'km')
-                if params.mileage and description_mileage[0] > int(params.mileage):
-                    continue
+                description_mileage = (int(''.join(x for x in description.split('|')[0].split(',')[-1] if x.isdigit())), 'km')
             except:
                 description_mileage = None
-
             try:
                 description_body = description.split('|')[1].split(',')[0].strip()
-                if params.body and params.body.upper() not in description_body.upper():
-                    continue
             except:
                 description_body = None
-
             try:
                 description_drive_type = description.split('|')[1].split(',')[1].strip()
             except:
                 description_drive_type = None
-
             try:
                 description_color = description.split('|')[1].split(',')[2].strip()
             except:
                 description_color = None
 
-            exchange = row[8]
+
+
+
+
+            if params.brand and params.brand.upper() not in title_brand.upper():
+                continue
+            if params.model and params.model.upper() not in title_model.upper():
+                continue
+            if (params.price_from and price_secondary_processed[0] < int(params.price_from)) or \
+                    (params.price_to and price_secondary_processed[0] > int(params.price_to)):
+                continue
+            if (params.year_from and description_year < int(params.year_from)) or \
+                    (params.year_to and description_year > int(params.year_to)):
+                continue
+            if params.transmission and params.transmission.upper() not in description_transmission.upper():
+                continue
+            if (params.engine_from and description_engine < int(params.engine_from)) or \
+                    (params.engine_to and description_engine > int(params.engine_to)):
+                continue
+            if params.mileage and description_mileage[0] > int(params.mileage):
+                continue
+            if params.body and params.body.upper() not in description_body.upper():
+                continue
+            if params.keywords and params.keywords.upper() not in full_card.upper():
+                continue
+
+
+
             try:
                 exchange_processed = 'no' if 'не' in row[8] else 'yes'
                 if params.exchange and params.exchange.upper() != exchange_processed.upper():
@@ -182,17 +161,15 @@ def parse_and_filter_file(params):
             except:
                 exchange_processed = None
 
-            scrap_date = row[9]
 
-            full_card = title + ' ' + price_primary + ' ' + price_secondary + ' ' + location + ' ' + labels + ' ' +\
-                        comment + ' ' + description + ' ' + exchange
 
-            if params.keywords and params.keywords.upper() not in full_card.upper():
-                continue
 
-            filtered_cars.append([{'card': {'id': card_id},
+
+
+
+            filtered_cars.append([{'card': {'id': int(card_id)},
                                    'title': {'deal_type': title_deal_type, 'brand': title_brand,
-                                             'model': title_model, 'restyling': title_restyling},
+                                             'model': title_model},
                                    'price': {'primary': price_primary_processed, 'secondary': price_secondary_processed},
                                    'location': {'country': location_country, 'city': location_city,
                                                 'region': location_region},
@@ -205,6 +182,8 @@ def parse_and_filter_file(params):
                                    'exchange': {'exchange': exchange},
                                    'scrap_date': {'scrap_date': scrap_date}
                                    }])
+
+            counter += 1                                                # for testing
 
     return filtered_cars
 
@@ -264,7 +243,7 @@ def main():
 
     end_parsing_and_filtering_file = time.perf_counter()               # performance testing
 
-    end_ordering_filtered_file, end_preparing_top_values_of_file = order_and_print_top_filtered_cars(params, filtered_cars)
+    # end_ordering_filtered_file, end_preparing_top_values_of_file = order_and_print_top_filtered_cars(params, filtered_cars)
 
     end_printing_result = time.perf_counter()                          # performance testing
 
