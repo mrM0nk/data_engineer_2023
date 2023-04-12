@@ -108,7 +108,7 @@ Notes:
 20230412:
 1. if __name__ == "__main__": main()     def main() should collect main functions
 2. debug = 0   if debug != 0: print(time performance)
-
+3. перенесены скрипты в папку get_cars(python)
 
 
 
