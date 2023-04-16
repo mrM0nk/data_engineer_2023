@@ -1,7 +1,7 @@
 import argparse
 import csv
 import re
-import time                                                      # for performance testing
+import time
 from typing import Optional
 from typing import Sequence
 from tabulate import tabulate
@@ -9,7 +9,9 @@ from tabulate import tabulate
 
 def get_args(argv: Optional[Sequence[str]] = None):
     """this function sets up arguments for getting cars and returns arguments for further searching cars
-    creation date: 2023-04-05, last_update: 2023-04-12, developer: Maksym Sukhorukov"""
+    creation date: 2023-04-05, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
+
+    start_getting_params = time.perf_counter()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-year_from', type=int, default=None, help='only digit values')
@@ -32,13 +34,19 @@ def get_args(argv: Optional[Sequence[str]] = None):
 
     args = parser.parse_args(argv)
 
+    end_getting_params = time.perf_counter()
+    if args.debug == 1:
+        print(f'Taken time: For getting parameters is {round(end_getting_params - start_getting_params, 2)}s')
+
     return args
 
 
 def parse_and_filter_file(params):
     """this function splits dataset into tokens and uses arguments as params for filtering cars and returns dic of
        filtered cars for further processing filtered cars
-    creation date: 2023-04-05, last_update: 2023-04-08, developer: Maksym Sukhorukov"""
+    creation date: 2023-04-05, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
+
+    start_parsing_and_filtering_file = time.perf_counter()
 
     header_line = True
     filtered_cars = []
@@ -185,20 +193,38 @@ def parse_and_filter_file(params):
 
             counter += 1                                                # for testing
 
+    end_parsing_and_filtering_file = time.perf_counter()
+    if params.debug == 1:
+        print(f'Taken time: For parsing and filtering file is '
+              f'{round(end_parsing_and_filtering_file - start_parsing_and_filtering_file, 2)}s')
+
     return filtered_cars
 
 
-def order_and_print_top_filtered_cars(params, filtered_cars):
-    """this function orders filtered cars and prints them using params
-    creation date: 2023-04-08, last_update: 2023-04-09, developer: Maksym Sukhorukov"""
+def order_filtered_cars(params, filtered_cars):
+    """this function orders filtered cars
+    creation date: 2023-04-08, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
+
+    start_ordering_filtered_file = time.perf_counter()
 
     filtered_cars_and_ordered = sorted(sorted(sorted(filtered_cars,
                                                      key=lambda x: x[0]['description']['mileage'][0]),
                                               key=lambda x: x[0]['description']['year'], reverse=True),
                                        key=lambda x: x[0]['price']['secondary'][0])
 
-    end_time_ordering_filtered_file = time.perf_counter()             # performance testing
-    end_time_preparing_top_values_of_file = time.perf_counter()       # performance testing
+    end_ordering_filtered_file = time.perf_counter()
+    if params.debug == 1:
+        print(f'Taken time: For ordering filtered file is '
+              f'{round(end_ordering_filtered_file - start_ordering_filtered_file, 2)}s')
+
+    return filtered_cars_and_ordered
+
+
+def print_top_filtered_cars(params, filtered_cars_and_ordered):
+    """this function prints filtered and ordered cars using params
+    creation date: 2023-04-17, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
+
+    start_printing_ordered_and_filtered_file = time.perf_counter()
 
     counter = 0
 
@@ -220,43 +246,33 @@ def order_and_print_top_filtered_cars(params, filtered_cars):
 
             counter += 1
 
-        end_time_preparing_top_values_of_file = time.perf_counter()                           # performance testing
-
         print(tabulate(prepared_to_print,
                        headers=['brand', 'model', 'price', 'year', 'transmission', 'engine', 'mileage', 'body', 'fuel'],
                        tablefmt='plain'))     # mixed_grid
 
-    return end_time_ordering_filtered_file, end_time_preparing_top_values_of_file             # performance testing
+    end_printing_ordered_and_filtered_file = time.perf_counter()
+    if params.debug == 1:
+        print(f'Taken time: For printing ordered and filtered file is '
+              f'{round(end_printing_ordered_and_filtered_file - start_printing_ordered_and_filtered_file, 2)}s')
 
 
 def main():
     """this function runs all the required functions
-    creation date: 2023-04-12, last_update: 2023-04-12, developer: Maksym Sukhorukov"""
+    creation date: 2023-04-12, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
 
-    start_program = time.perf_counter()                                # performance testing
+    start_program = time.perf_counter()
 
     params = get_args()
 
-    end_getting_params = time.perf_counter()                           # performance testing
-
     filtered_cars = parse_and_filter_file(params)
 
-    end_parsing_and_filtering_file = time.perf_counter()               # performance testing
+    filtered_cars_and_ordered = order_filtered_cars(params, filtered_cars)
 
-    # end_ordering_filtered_file, end_preparing_top_values_of_file = order_and_print_top_filtered_cars(params, filtered_cars)
+    print_top_filtered_cars(params, filtered_cars_and_ordered)
 
-    end_printing_result = time.perf_counter()                          # performance testing
-
-    end_program = time.perf_counter()                                  # performance testing
-
+    end_program = time.perf_counter()
     if params.debug == 1:
-        print(f'Taken time:\n'
-              f'For getting parameters is {round(end_getting_params - start_program, 2)}s\n'
-              f'For parsing and filtering file is {round(end_parsing_and_filtering_file - end_getting_params, 2)}s\n'
-              f'For ordering filtered file is {round(end_ordering_filtered_file - end_parsing_and_filtering_file, 2)}s\n'
-              f'For preparing top values of file is {round(end_preparing_top_values_of_file - end_ordering_filtered_file, 2)}s\n'
-              f'For printing result file is {round(end_printing_result - end_preparing_top_values_of_file, 2)}s\n'
-              f'For full program is {round(end_program - start_program, 2)}s')                     # performance testing
+        print(f'Taken time: For full program is {round(end_program - start_program, 2)}s')
 
 
 if __name__ == "__main__":
