@@ -31,6 +31,7 @@ def get_args(argv: Optional[Sequence[str]] = None):
     parser.add_argument('-keywords', type=str, default=None, help='please put additional 1 word for searching')
     parser.add_argument('-max_records', type=int, default=20, help='please put Top N digit value')
     parser.add_argument('-source_file', type=str, default='source_data/cars-av-by_card_20230407.csv', help='')
+    #parser.add_argument('-source_file', type=str, default='source_data/cars-av-by_card-2023-04-13-11-19-37.csv', help='')
     parser.add_argument('-debug', type=int, default=1, help='if debug flag = 1, the debug proces will run')
 
     args = parser.parse_args(argv)
