@@ -32,7 +32,7 @@ def get_args(argv: Optional[Sequence[str]] = None):
     parser.add_argument('-max_records', type=int, default=20, help='please put Top N digit value')
     parser.add_argument('-source_file', type=str, default='source_data/cars-av-by_card_20230407.csv', help='')
     #parser.add_argument('-source_file', type=str, default='source_data/cars-av-by_card-2023-04-13-11-19-37.csv', help='')
-    parser.add_argument('-debug', type=int, default=1, help='if debug flag = 1, the debug proces will run')
+    parser.add_argument('-debug', type=int, default=0, help='if debug flag = 1, the debug proces will run')
 
     args = parser.parse_args(argv)
 
@@ -47,7 +47,7 @@ def filtering_cars(params, title_brand, title_model, price_secondary_processed, 
                    description_transmission, description_engine, description_mileage,
                    description_body, full_card, description_fuel, exchange_processed):
     """this function gets filtering params and tokens for filtering cars and returns arguments for further searching cars
-    creation date: 2023-04-07, last_update: 2023-04-18, developer: Maksym Sukhorukov"""
+    creation date: 2023-04-17, last_update: 2023-04-18, developer: Maksym Sukhorukov"""
 
     result = False
 
@@ -85,7 +85,7 @@ def parse_and_filter_file(params):
        filtered cars for further processing filtered cars
     creation date: 2023-04-05, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
 
-    start_parsing_file = time.perf_counter()
+    start_opening_file = time.perf_counter()
 
     header_line = True
     filtered_cars = []
@@ -99,7 +99,9 @@ def parse_and_filter_file(params):
         end_opening_file = time.perf_counter()
         if params.debug == 1:
             print(f'Taken time: For opening file is '
-                  f'{round(end_opening_file - start_parsing_file, 2)}s')
+                  f'{round(end_opening_file - start_opening_file, 2)}s')
+
+        start_parsing_file = time.perf_counter()
 
         for row in cars:
             if header_line:               # or counter > 200000:         # or counter > 5 added for testing

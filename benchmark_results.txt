@@ -11,8 +11,8 @@ params options:
     - default - run "main.py" script without any arguments
 
 dataset:
-    - 1 - source_data/cars-av-by_card_20230407.csv
-    - 2 - source_data/cars-av-by_card-2023-04-13-11-19-37.csv
+    - 1 - source_data/cars-av-by_card_20230407.csv (34593 lines)
+    - 2 - source_data/cars-av-by_card-2023-04-13-11-19-37.csv (52764 lines)
 
 for running benchmark:
     - open bash utility in folder that is related to tested script
