@@ -42,44 +42,47 @@ def get_args(argv: Optional[Sequence[str]] = None):
     return args
 
 
+def filtering_cars(params, title_brand, title_model, price_secondary_processed, description_year,
+                   description_transmission, description_engine, description_mileage,
+                   description_body, full_card, description_fuel, exchange_processed):
+    """this function gets filtering params and tokens for filtering cars and returns arguments for further searching cars
+    creation date: 2023-04-07, last_update: 2023-04-18, developer: Maksym Sukhorukov"""
+
+    result = False
+
+    if params.brand and params.brand.upper() not in title_brand.upper():
+        result = True
+    if params.model and params.model.upper() not in title_model.upper():
+        result = True
+    if (params.price_from and price_secondary_processed[0] < int(params.price_from)) or \
+            (params.price_to and price_secondary_processed[0] > int(params.price_to)):
+        result = True
+    if (params.year_from and description_year < int(params.year_from)) or \
+            (params.year_to and description_year > int(params.year_to)):
+        result = True
+    if params.transmission and params.transmission.upper() not in description_transmission.upper():
+        result = True
+    if (params.engine_from and description_engine < int(params.engine_from)) or \
+            (params.engine_to and description_engine > int(params.engine_to)):
+        result = True
+    if params.mileage and description_mileage[0] > int(params.mileage):
+        result = True
+    if params.body and params.body.upper() not in description_body.upper():
+        result = True
+    if params.keywords and params.keywords.upper() not in full_card.upper():
+        result = True
+    if params.fuel and params.fuel.upper() not in description_fuel.upper():
+        result = True
+    if params.exchange and params.exchange.upper() != exchange_processed.upper():
+        result = True
+
+    return result
+
+
 def parse_and_filter_file(params):
     """this function splits dataset into tokens and uses arguments as params for filtering cars and returns dic of
        filtered cars for further processing filtered cars
     creation date: 2023-04-05, last_update: 2023-04-17, developer: Maksym Sukhorukov"""
-
-    def filtering_cars(params, title_brand, title_model, price_secondary_processed, description_year,
-                       description_transmission, description_engine, description_mileage,
-                       description_body, full_card, description_fuel, exchange_processed):
-
-        result = False
-
-        if params.brand and params.brand.upper() not in title_brand.upper():
-            result = True
-        if params.model and params.model.upper() not in title_model.upper():
-            result = True
-        if (params.price_from and price_secondary_processed[0] < int(params.price_from)) or \
-                (params.price_to and price_secondary_processed[0] > int(params.price_to)):
-            result = True
-        if (params.year_from and description_year < int(params.year_from)) or \
-                (params.year_to and description_year > int(params.year_to)):
-            result = True
-        if params.transmission and params.transmission.upper() not in description_transmission.upper():
-            result = True
-        if (params.engine_from and description_engine < int(params.engine_from)) or \
-                (params.engine_to and description_engine > int(params.engine_to)):
-            result = True
-        if params.mileage and description_mileage[0] > int(params.mileage):
-            result = True
-        if params.body and params.body.upper() not in description_body.upper():
-            result = True
-        if params.keywords and params.keywords.upper() not in full_card.upper():
-            result = True
-        if params.fuel and params.fuel.upper() not in description_fuel.upper():
-            result = True
-        if params.exchange and params.exchange.upper() != exchange_processed.upper():
-            result = True
-
-        return result
 
     start_parsing_file = time.perf_counter()
 
