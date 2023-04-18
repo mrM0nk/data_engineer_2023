@@ -104,7 +104,7 @@ def parse_and_filter_file(params):
         start_parsing_file = time.perf_counter()
 
         for row in cars:
-            if header_line:               # or counter > 200000:         # or counter > 5 added for testing
+            if header_line:                              # or counter > 5: added for testing
                 header_line = False
                 continue
 
