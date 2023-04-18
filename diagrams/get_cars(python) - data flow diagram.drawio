@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-04-18T16:49:49.441Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="qwx6vB91mNd6rJnzERcA" version="21.1.8" type="github" pages="3">
+<mxfile host="app.diagrams.net" modified="2023-04-18T17:07:35.895Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="TPkkndgSOFaA6z_rNmJN" version="21.1.8" type="github" pages="3">
   <diagram name="DF Diagram" id="c7558073-3199-34d8-9f00-42111426c3f3">
-    <mxGraphModel dx="1434" dy="884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2049" dy="1263" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="Lgw3R8MpRPk3H50DomDi-1" value="ETL area" parent="0" />
@@ -22,7 +22,7 @@
         <mxCell id="Lgw3R8MpRPk3H50DomDi-13" value="Load" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=30;fontStyle=0;fontColor=#969292;" parent="Lgw3R8MpRPk3H50DomDi-1" vertex="1">
           <mxGeometry x="1386" y="43" width="90" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="1" value="Main" parent="0" />
+        <mxCell id="1" value="DF: Main" parent="0" />
         <mxCell id="rshOlZ9MuQ5T85WfayCy-8" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="295" y="243" as="sourcePoint" />
@@ -333,8 +333,8 @@
         <mxCell id="Zruyz8w6H2R_fK1rc9ng-5" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;Example of code:&lt;/span&gt;" style="text;html=1;resizable=0;points=[];autosize=1;align=center;verticalAlign=top;spacingTop=-4;fontSize=17;" parent="1" vertex="1">
           <mxGeometry x="112" y="420" width="120" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="Zruyz8w6H2R_fK1rc9ng-6" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;Example of data&lt;/span&gt;" style="text;html=1;resizable=0;points=[];autosize=1;align=center;verticalAlign=top;spacingTop=-4;fontSize=17;" parent="1" vertex="1">
-          <mxGeometry x="418" y="420" width="120" height="30" as="geometry" />
+        <mxCell id="Zruyz8w6H2R_fK1rc9ng-6" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;Example of prepared data&lt;/span&gt;" style="text;html=1;resizable=0;points=[];autosize=1;align=center;verticalAlign=top;spacingTop=-4;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="393" y="420" width="170" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Zruyz8w6H2R_fK1rc9ng-7" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;&lt;b&gt;4. final view of filtered and ordered data&lt;/b&gt;&lt;/span&gt;" style="text;html=1;resizable=0;points=[];autosize=1;align=center;verticalAlign=top;spacingTop=-4;fontSize=17;" parent="1" vertex="1">
           <mxGeometry x="760" y="390" width="270" height="30" as="geometry" />
