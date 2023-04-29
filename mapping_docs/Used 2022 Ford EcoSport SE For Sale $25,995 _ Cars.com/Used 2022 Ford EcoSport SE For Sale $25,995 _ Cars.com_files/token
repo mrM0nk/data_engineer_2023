@@ -1,0 +1,21 @@
+(function() {
+    roxanne_dynamic = {
+        host: 'https://ref.dealerinspire.com',
+        token: 'MTE3MTg2MDI3NjExNDM3NDk1NzQxOTk5MTc4MjI4',
+        site_id: '97345',
+        mixpanel: '',
+        enable_events: 'false',
+        version: 'legacy'
+    };
+
+    var code_url = 'https://ref.dealerinspire.com/site/code?tag=55140c20187ad6d39667d959a40d2c91&version=legacy';
+
+    var roxanneScriptElement = document.createElement('script');
+
+    roxanneScriptElement.src = code_url;
+    roxanneScriptElement.async = true;
+    roxanneScriptElement.version = roxanne_dynamic.version;
+
+    document.head.appendChild(roxanneScriptElement);
+})(this);
+
