@@ -1,9 +1,45 @@
-SELECT 
+	INSERT INTO `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct_300_Maksym 
+   (row_id, 
+	card_id, 
+	brand, 
+	model, 
+	price_primary, 
+	price_history, 
+	adress, 
+	state, 
+	zip_code, 
+	vin_num, 
+	home_delivery_flag, 
+	virtual_appointments_flag, 
+	comment, 
+	`year`, 
+	transmission_type, 
+	transmission_details, 
+	engine, 
+	engine_details, 
+	fuel, 
+	mpg, 
+	mileage, 
+	mileage_type, 
+	body, 
+	drive_type, 
+	color, 
+	vehicle_history, 
+	scrap_date, 
+	input_file_name, 
+	dl_loaded_date, 
+	stg1_loaded_date, 
+	row_hash) 
+	SELECT 
+--gallery,
+--url,
+--`options`,
+GENERATE_UUID() AS row_id,
 card_id,
 REGEXP_EXTRACT(title, r'(\S+)', 1, 2) AS brand,
 LEFT(REGEXP_REPLACE(title, r'^(\S+) (\S+) ', ''), 100) AS model,
 --title,
-price_primary, 
+CAST(REGEXP_REPLACE(price_primary, r'[^0-9]+', '') AS INT64) AS price_primary, 
 price_history, 
 REGEXP_REPLACE(location, r',[^,]*$', '') AS adress,
 LEFT(TRIM(REGEXP_EXTRACT(location, r'[^,]+', 1, 2)), 2) AS state,
@@ -14,7 +50,7 @@ CASE WHEN REGEXP_CONTAINS(UPPER(labels), r'HOME DELIVERY') THEN 'Y' ELSE 'N' END
 CASE WHEN REGEXP_CONTAINS(UPPER(labels), r'VIRTUAL APPOINTMENTS') THEN 'Y' ELSE 'N' END AS virtual_appointments_flag,
 --labels, 
 comment,
-REGEXP_EXTRACT(description, r'^\d{4}') AS `year`,
+CAST(REGEXP_EXTRACT(description, r'^\d{4}') AS INT64) AS `year`,
 CASE WHEN REGEXP_CONTAINS(UPPER(split(description, ', ')[1]), r'CVT') THEN 'CVT'
      WHEN REGEXP_CONTAINS(UPPER(split(description, ', ')[1]), r'AUTO') THEN 'Automatic'
      ELSE NULL 
@@ -31,8 +67,28 @@ split(split(description, '|')[1], ',')[1] as drive_type,
 split(split(description, '|')[1], ',')[2] as color,
 --description, 
 vehicle_history, 
-scrap_date
-FROM `paid-project-346208`.car_ads_ds_landing.`lnd_cars-com_card_300`
+scrap_date,
+input_file_name,
+dl_loaded_date,
+CURRENT_TIMESTAMP() as stg1_loaded_date,
+SHA256(CONCAT(
+			IFNULL(card_id, ''),
+			IFNULL(title, ''),
+			IFNULL(price_primary, ''),
+			IFNULL(price_history, ''),
+			IFNULL(location, ''),
+			IFNULL(labels, ''),
+			IFNULL(comment, ''),
+			IFNULL(description, ''),
+			IFNULL(vehicle_history, '')
+			)) as row_hash
+FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym
 ORDER BY card_id
+
+
+
+
+
+
 
 
