@@ -25,8 +25,6 @@ SELECT *
 FROM`paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct_300_Maksym
 
 
-CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
-
 
 
 
@@ -51,17 +49,34 @@ FROM `paid-project-346208`.meta_ds.log_conversion_Maksym
 
 
 
+SELECT ROW_NUMBER () OVER(PARTITION BY row_hash ORDER BY modified_date ASC) AS rn,row_hash 
+FROM`paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct_300_Maksym
+ORDER BY row_hash DESC
 
 
 
 
 
+CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
 
 
 
 
+CREATE OR REPLACE PROCEDURE `paid-project-346208`.car_ads_ds_staging.usp_test_Maksym()
+BEGIN 
+	
+	CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
+	CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
+	CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
+	CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
+	CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
 
 
+END;
+
+
+
+CALL `paid-project-346208`.car_ads_ds_staging.usp_test_Maksym();
 
 
 

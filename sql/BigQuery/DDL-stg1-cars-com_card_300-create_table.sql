@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `paid-project-346208.car_ads_ds_staging.stg1_cars_com
   vehicle_history STRING, 
   scrap_date TIMESTAMP NOT NULL,
   input_file_name STRING NOT NULL,
-  dl_loaded_date TIMESTAMP NOT NULL,
-  stg1_loaded_date TIMESTAMP NOT NULL,
+  --dl_loaded_date TIMESTAMP NOT NULL,
+  modified_date TIMESTAMP NOT NULL,
   row_hash BYTES NOT NULL,
   PRIMARY KEY (row_id) NOT ENFORCED
 );
