@@ -61,17 +61,59 @@ WHERE card_id = '885744'
 
 
 
+TRUNCATE TABLE `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym;
+
+
+INSERT INTO `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym 
+	  (gallery, card_id, url, title, price_primary, price_history, `options`, vehicle_history, comment, location, labels, description, scrap_date, input_file_name, source_id, dl_loaded_date) 
+SELECT gallery, card_id, url, title, price_primary, price_history, `options`, vehicle_history, comment, location, labels, description, scrap_date, input_file_name, source_id, dl_loaded_date 
+FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym_2ndSnapshot;
+
+
+
+TRUNCATE TABLE `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym;
+
+
+INSERT INTO `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym 
+	  (gallery, card_id, url, title, price_primary, price_history, `options`, vehicle_history, comment, location, labels, description, scrap_date, input_file_name, source_id, dl_loaded_date) 
+SELECT gallery, card_id, url, title, price_primary, price_history, `options`, vehicle_history, comment, location, labels, description, scrap_date, input_file_name, source_id, dl_loaded_date 
+FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym_1stSnapshot;
+
+
+SELECT *
+FROM `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct
+ORDER BY modified_date DESC;
 
 
 
 
+SELECT *
+FROM `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct
+--WHERE card_id = '885744'
+ORDER BY modified_date DESC, card_id ASC;
 
 
 
+SELECT COUNT(*)
+FROM `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct
 
 
+k lëÏ Òþó  ßCÁÃ ¤Îá# NÏ-J ð Çúu®
 
 
+SELECT *, SHA256(CONCAT(					IFNULL(card_id, ''),					IFNULL(title, ''),					IFNULL(price_primary, ''),					IFNULL(price_history, ''),					IFNULL(vehicle_history, ''),					IFNULL(comment, ''),					IFNULL(location, ''),					IFNULL(labels, ''),					IFNULL(description, '')					)) as row_hash
+FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym
+WHERE card_id = '885744';
+
+
+SELECT *, SHA256(CONCAT(					IFNULL(card_id, ''),					IFNULL(title, ''),					IFNULL(price_primary, ''),					IFNULL(price_history, ''),					IFNULL(vehicle_history, ''),					IFNULL(comment, ''),					IFNULL(location, ''),					IFNULL(labels, ''),					IFNULL(description, '')					)) as row_hash
+FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym_1stSnapshot
+WHERE card_id = '885744';
+
+
+SELECT *, SHA256(CONCAT(					IFNULL(card_id, ''),					IFNULL(title, ''),					IFNULL(price_primary, ''),					IFNULL(price_history, ''),					IFNULL(vehicle_history, ''),					IFNULL(comment, ''),					IFNULL(location, ''),					IFNULL(labels, ''),					IFNULL(description, '')					)) as row_hash
+FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym_2ndSnapshot
+WHERE card_id = '885744';
 
 
 

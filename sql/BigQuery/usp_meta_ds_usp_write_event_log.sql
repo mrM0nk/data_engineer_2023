@@ -8,8 +8,8 @@ BEGIN
 	
 	INSERT INTO `paid-project-346208`.meta_ds.audit_event_log (
 	event_log_id, 
-	log_data, 
-	task, 
+	log_date_ts, 
+	event_name, 
 	status, 
 	process_log_id
 	) 

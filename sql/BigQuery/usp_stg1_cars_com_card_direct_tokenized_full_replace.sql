@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym()
+CREATE OR REPLACE PROCEDURE `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload()
 BEGIN 
 	
 	
@@ -11,22 +11,22 @@ BEGIN
 	DECLARE metrics STRUCT <truncated INT64, inserted INT64, updated INT64, mark_as_deleted INT64, message STRING>;
 
 
-	CALL `paid-project-346208`.meta_ds.usp_write_process_log ('START', process_id, 'usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym', NULL);
+	CALL `paid-project-346208`.meta_ds.usp_write_process_log ('START', process_id, 'usp_stg1_cars_com_card_direct_tokenized_full_reload', NULL);
 
 
-	CALL `paid-project-346208`.meta_ds.usp_write_event_log(process_id, 'usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym', 'Started Full reload data on Stg1');
+	CALL `paid-project-346208`.meta_ds.usp_write_event_log(process_id, 'transform & load data', 'start');
 	--end audit
 
 
 	--start transforming data
-	TRUNCATE TABLE `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct_300_Maksym;
+	TRUNCATE TABLE `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct;
 	
 	SET truncated_row_cound = @@row_count;  --audit truncated rows
 
 	SET processed_row_count = (SELECT COUNT(*) FROM `paid-project-346208`.car_ads_ds_landing.cars_com_card_direct_300_Maksym);
 	
 	
-	INSERT INTO `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct_300_Maksym 
+	INSERT INTO `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct 
 	   (row_id, 
 		card_id, 
 		brand, 
@@ -56,14 +56,15 @@ BEGIN
 		scrap_date, 
 		input_file_name, 
 		modified_date, 
-		row_hash) 
+		row_hash,
+		oper) 
 	WITH tokenized_data AS ( 
 		SELECT
 		GENERATE_UUID() AS row_id,
 		card_id,
 		REGEXP_EXTRACT(title, r'(\S+)', 1, 2) AS brand,
 		LEFT(REGEXP_REPLACE(title, r'^(\S+) (\S+) ', ''), 100) AS model,
-		CAST(REGEXP_REPLACE(price_primary, r'[^0-9]+', '') AS INT64) AS price_primary, 
+		SAFE_CAST(REGEXP_REPLACE(price_primary, r'[^0-9]+', '') AS INT64) AS price_primary, 
 		price_history, 
 		REGEXP_REPLACE(location, r',[^,]*$', '') AS adress,
 		LEFT(TRIM(REGEXP_EXTRACT(location, r'[^,]+', 1, 2)), 2) AS state,
@@ -72,13 +73,13 @@ BEGIN
 		CASE WHEN REGEXP_CONTAINS(UPPER(labels), r'HOME DELIVERY') THEN 'Y' ELSE 'N' END AS home_delivery_flag,
 		CASE WHEN REGEXP_CONTAINS(UPPER(labels), r'VIRTUAL APPOINTMENTS') THEN 'Y' ELSE 'N' END AS virtual_appointments_flag,
 		comment,
-		CAST(REGEXP_EXTRACT(description, r'^\d{4}') AS INT64) AS `year`,
+		SAFE_CAST(REGEXP_EXTRACT(description, r'^\d{4}') AS INT64) AS `year`,
 		CASE WHEN REGEXP_CONTAINS(UPPER(split(description, ', ')[1]), r'CVT') THEN 'CVT'
 		     WHEN REGEXP_CONTAINS(UPPER(split(description, ', ')[1]), r'AUTO') THEN 'Automatic'
 		     ELSE NULL 
 		END AS transmission_type, 
 		split(description, ', ')[1] AS transmission_details,
-		CAST(REPLACE(TRIM(REGEXP_EXTRACT(split(description, ', ')[2], r'(\d.\dL|\dL)')), 'L', '') AS NUMERIC) * 1000 AS engine,
+		SAFE_CAST(REPLACE(TRIM(REGEXP_EXTRACT(split(description, ', ')[2], r'(\d.\dL|\dL)')), 'L', '') AS NUMERIC) * 1000 AS engine,
 		split(description, ', ')[2] AS engine_details,
 		REGEXP_EXTRACT(split(description, ', ')[3], r'^\S+') AS fuel,
 		REPLACE(TRIM(REGEXP_EXTRACT(split(description, ', ')[3], r'[(](.+)[mpg)]')), ' mpg', '') AS mpg,
@@ -169,22 +170,23 @@ BEGIN
 		scrap_date, 
 		input_file_name, 
 		modified_date, 
-		row_hash
+		row_hash,
+		'i'
 	FROM ordered_data
 	WHERE rn = 1;
 	--end transforming data	
 
 	SET inserted_row_count = @@row_count;  --audit inserted rows
 	
-	SET message = ('Processed row count in Landing = ' || CAST(processed_row_count AS STRING) || '.');
+	SET message = ('Processed row count in Landing = ' || SAFE_CAST(processed_row_count AS STRING) || '.');
 	
 	SET metrics = (truncated_row_cound, inserted_row_count, NULL, NULL, message);
 
 	-- start audit
-	CALL `paid-project-346208`.meta_ds.usp_write_event_log(process_id, 'usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym', 'Finished Full reload data on Stg1');
+	CALL `paid-project-346208`.meta_ds.usp_write_event_log(process_id, 'transform & load data', 'end');
 
 
-	CALL `paid-project-346208`.meta_ds.usp_write_process_log ('END', process_id, 'usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym', metrics);
+	CALL `paid-project-346208`.meta_ds.usp_write_process_log ('END', process_id, 'usp_stg1_cars_com_card_direct_tokenized_full_reload', metrics);
 	-- end audit
 
 

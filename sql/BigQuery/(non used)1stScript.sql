@@ -57,7 +57,7 @@ ORDER BY row_hash DESC
 
 
 
-CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload_Maksym();
+CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_reload();
 
 
 
@@ -83,11 +83,26 @@ CALL `paid-project-346208`.car_ads_ds_staging.usp_test_Maksym();
 
 
 
+ALTER TABLE `paid-project-346208`.meta_ds.audit_event_log 
+RENAME COLUMN log_data TO log_date_ts,
+RENAME COLUMN task to event_name
+
+
+SELECT
+CASE WHEN 'LIKE' = 'LIKE' THEN 1
+ELSE 0
+END
 
 
 
 
+CALL `paid-project-346208`.car_ads_ds_staging.usp_stg1_cars_com_card_direct_tokenized_full_merge()
 
 
+SELECT COUNT(*)
+FROM `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct
+
+
+TRUNCATE TABLE `paid-project-346208`.car_ads_ds_staging.stg1_cars_com_card_direct
 
 
